@@ -1,11 +1,8 @@
 import youtube_dl
-import time
-from selenium import webdriver
-import subprocess
 import os
 import sys
 
-#youtube-dl https://youtu.be/zRwt1ER6GkM -x --audio-format "mp3"s
+#youtube-dl https://youtu.be/zRwt1ER6GkM -x --audio-format "mp3"
 
 class Youtube():
 	"""
@@ -24,20 +21,53 @@ class Youtube():
 		"""
 		Nous souhaitons récupérer l'id, le title et le creator dans des listes
 		"""
-		infos = {"full_URL" : [], "titre" : [], "auteur" : []}
+		infos = {"full_URL" : [], "titre" : [], "auteur" : [], "notCorresponding": []}
+		titre = []
 
 		extract = youtube_dl.YoutubeDL({}).extract_info(self.URL, download=False)
 		for x in range(0,len(extract["entries"])):
-			infos["full_URL"].append(self.template_URL + extract["entries"][x]["id"])
-			infos["titre"].append(extract["entries"][x]["title"].lower().strip().capitalize())
-			infos["auteur"].append(extract["entries"][x]["creator"].lower().strip().capitalize())
-		
+
+			if "Music" in extract["entries"][x]["categories"]:
+				infos["full_URL"].append(self.template_URL + extract["entries"][x]["id"])
+				infos["auteur"].append(extract["entries"][x]["creator"].lower().strip().capitalize())
+
+				titre.append(extract["entries"][x]["title"].lower().strip().capitalize())
+				infos["titre"] = self.sortName(titre)
+
+			if "Music" not in extract["entries"][x]["categories"]:
+				print("\n\nPart of the playlist isn't corresponding to the good format")
+				infos["notCorresponding"].append(extract["entries"][x]["title"])
+				print(infos["notCorresponding"]+"\n\n")
+
 		return infos
 
 			
 
-	def download():
-		pass
+	def download(self,infos):
+		for url in infos["full_URL"]:
+			os.system('youtube-dl {} -x --audio-format "mp3"'.format(url))
+
+		"""
+		ydl_opts = {}
+		with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+    		ydl.download(["https://www.youtube.com/watch?v=rVeMiVU77wo"])
+    	""" #same thing
 
 
-
+	def sortName(self,infos):
+		for titre in infos:
+			if '(' in titre:
+				position_dans_liste = infos.index(titre)
+				position_dans_titre = titre.index('(')
+				if ')'in titre:
+					position_dans_liste2 = infos.index(titre)
+					position_dans_titre2 = titre.index(')')					
+					infos[position_dans_liste] = infos[position_dans_liste][:position_dans_titre].strip()+infos[position_dans_liste2][position_dans_titre2+1:]
+			if '[' in titre:
+				position_dans_liste = infos.index(titre)
+				position_dans_titre = titre.index('[')
+				if ']'in titre:
+					position_dans_liste2 = infos.index(titre)
+					position_dans_titre2 = titre.index(']')					
+					infos[position_dans_liste] = infos[position_dans_liste][:position_dans_titre].strip()+infos[position_dans_liste2][position_dans_titre2+1:]
+		return infos

@@ -3,7 +3,10 @@ import sys
 import os
 
 def detect_OS():
-	return platform.system()
+	OS = platform.system()
+	if OS == "Linux":
+		print("This program isn't built for Linux system")
+		sys.exit(0) 
 
 def extract_args(path):
 	"""
@@ -32,14 +35,6 @@ def extract_args(path):
 
 def renameFile(infos):
 	pass
-
-"""
-def set_path(arguments,x):
-	if x==1 and len(arguments)==2: #cas dans lequel l'utilisateur veut créer un fichier pour stocker les musiques
-		os.chdir(path[x]+arguments[1]) #va dans le dossier de travail
-	else: #autre déplacement
-		os.chdir(path[x])
-"""
 
 create_file = lambda fileName : os.mkdir(fileName) #créer le dossier de travail
 
