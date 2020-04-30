@@ -2,26 +2,25 @@ import music_downloader as msd
 import lib
 import sys
 
-# Etape 1 : extraire l'URL de la playlist passé en argument
+# Etape 1 : vérifier l'OS
 # Etape 2 : définir le path de téléchargement
-# Etape 3 : extraire les informations sur chaque musique
-# Etape 4 : télécharger la playlist
-# Etape 5 : renommer chaque fichier (artistName - musicName)
-
-template_URL = "https://www.youtube.com/watch?v="
-URL = "https://www.youtube.com/playlist?list=PLbwBenSp6mG0zJGx8b6dMxVwkqul8b84P" 
+# Etape 3 : extraire l'URL de la playlist passé en argument 
+# Etape 4 : extraire les informations sur chaque musique
+# Etape 5 : télécharger la playlist
+# Etape 6 : renommer chaque fichier (artistName - musicName)
 
 def main():
-	"""OS = lib.detect_OS()
-	if OS == "Linux":
-		print("This program isn't built for Linux system")
-		sys.exit(0)
-	playlistURL = lib.extract_args("C:/Users/carre/Music")"""
+	# Etape 1
+	lib.detect_OS()
+	# Etape 2 et 3
+	playlistURL = lib.extract_args("C:/Users/carre/Music")
+	Youtube = msd.Youtube(playlistURL,"https://www.youtube.com/watch?v=")
+	# Etape 4
+	infos = Youtube.getInfos()
+	# Etape 5
+	Youtube.download(infos)
+	# Etape 6
 
-
-	#Youtube = msd.Youtube(URL,template_URL)
-	#infos = Youtube.getInfos()
-	#print(infos)
 
 if __name__ == '__main__':
 	main()
