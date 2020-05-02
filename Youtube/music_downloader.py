@@ -1,4 +1,5 @@
 import youtube_dl
+import subprocess
 import os
 import sys
 
@@ -22,39 +23,35 @@ class Youtube():
 		Nous souhaitons récupérer l'id, le title et le creator dans des listes
 		"""
 		infos = {"full_URL" : [], "titre" : [], "auteur" : [], "notCorresponding": []}
-		titre = []
-
 		extract = youtube_dl.YoutubeDL({}).extract_info(self.URL, download=False)
 		for x in range(0,len(extract["entries"])):
-
 			if "Music" in extract["entries"][x]["categories"]:
 				infos["full_URL"].append(self.template_URL + extract["entries"][x]["id"])
-				infos["auteur"].append(extract["entries"][x]["creator"].lower().strip().capitalize())
-
-				titre.append(extract["entries"][x]["title"].lower().strip().capitalize())
-				infos["titre"] = self.sortName(titre)
+				infos["auteur"].append(extract["entries"][x]["creator"])
+				infos["titre"].append(extract["entries"][x]["title"])
 
 			if "Music" not in extract["entries"][x]["categories"]:
-				print("\n\nPart of the playlist isn't corresponding to the good format")
+				print("Part of the playlist isn't corresponding to the good format")
 				infos["notCorresponding"].append(extract["entries"][x]["title"])
-				print(infos["notCorresponding"]+"\n\n")
+				print(infos["notCorresponding"])
 
 		return infos
 
 			
 
-	def download(self,infos):
+	def download(self,infos,names_file):
+		i=0
 		for url in infos["full_URL"]:
-			os.system('youtube-dl {} -x --audio-format "mp3"'.format(url))
-
-		"""
-		ydl_opts = {}
-		with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-    		ydl.download(["https://www.youtube.com/watch?v=rVeMiVU77wo"])
-    	""" #same thing
+			#os.system('youtube-dl {} -x --audio-format "mp3"'.format(url))
+			os.system('youtube-dl {} -x --audio-format "mp3" -o "{}.%(ext)s"'.format(url, names_file[i]))
+			i+=1
 
 
-	def sortName(self,infos):
+	def sortName(self,dico):
+		names_file = []
+
+		infos = dico["titre"]
+
 		for titre in infos:
 			if '(' in titre:
 				position_dans_liste = infos.index(titre)
@@ -70,4 +67,39 @@ class Youtube():
 					position_dans_liste2 = infos.index(titre)
 					position_dans_titre2 = titre.index(']')					
 					infos[position_dans_liste] = infos[position_dans_liste][:position_dans_titre].strip()+infos[position_dans_liste2][position_dans_titre2+1:]
-		return infos
+		for titre in infos:
+			if '(' in titre:
+				position_dans_liste = infos.index(titre)
+				position_dans_titre = titre.index('(')
+				if ')'in titre:
+					position_dans_liste2 = infos.index(titre)
+					position_dans_titre2 = titre.index(')')					
+					infos[position_dans_liste] = infos[position_dans_liste][:position_dans_titre].strip()+infos[position_dans_liste2][position_dans_titre2+1:]
+			if '[' in titre:
+				position_dans_liste = infos.index(titre)
+				position_dans_titre = titre.index('[')
+				if ']'in titre:
+					position_dans_liste2 = infos.index(titre)
+					position_dans_titre2 = titre.index(']')					
+					infos[position_dans_liste] = infos[position_dans_liste][:position_dans_titre].strip()+infos[position_dans_liste2][position_dans_titre2+1:]
+		
+		i=0
+		for elem in dico["auteur"]:
+			if elem != None:
+				if str(elem) in str(infos[i]):
+					name_file = str(infos[i]).capitalize()
+					names_file.append(name_file)
+				else:
+					name_file = str(elem).capitalize() + ' - ' + str(infos[i]).capitalize()
+					names_file.append(name_file)
+			else:
+				name_file = str(infos[i]).capitalize()
+				names_file.append(name_file)
+			i+=1
+				
+		return names_file
+
+
+
+
+

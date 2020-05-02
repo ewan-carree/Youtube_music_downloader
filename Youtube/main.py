@@ -6,20 +6,19 @@ import sys
 # Etape 2 : définir le path de téléchargement
 # Etape 3 : extraire l'URL de la playlist passé en argument 
 # Etape 4 : extraire les informations sur chaque musique
-# Etape 5 : télécharger la playlist
-# Etape 6 : renommer chaque fichier (artistName - musicName)
+# Etape 5 : renommer chaque fichier (artistName - musicName)
+# Etape 6 : télécharger la playlist
+
+template_URL = "https://www.youtube.com/watch?v="
+URL = "https://www.youtube.com/playlist?list=PLbwBenSp6mG0zJGx8b6dMxVwkqul8b84P" #a enlever plus tard et remplacer par playlistURL
 
 def main():
-	# Etape 1
 	lib.detect_OS()
-	# Etape 2 et 3
 	playlistURL = lib.extract_args("C:/Users/carre/Music")
-	Youtube = msd.Youtube(playlistURL,"https://www.youtube.com/watch?v=")
-	# Etape 4
+	Youtube = msd.Youtube(playlistURL,template_URL)
 	infos = Youtube.getInfos()
-	# Etape 5
-	Youtube.download(infos)
-	# Etape 6
+	names_file = Youtube.sortName(infos)
+	Youtube.download(infos,names_file)
 
 
 if __name__ == '__main__':
