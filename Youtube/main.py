@@ -10,11 +10,11 @@ import sys
 # Etape 6 : télécharger la playlist
 
 template_URL = "https://www.youtube.com/watch?v="
-URL = "https://www.youtube.com/playlist?list=PLbwBenSp6mG0zJGx8b6dMxVwkqul8b84P" #a enlever plus tard et remplacer par playlistURL
 
 def main():
-	lib.detect_OS()
-	playlistURL = lib.extract_args("C:/Users/carre/Music")
+	#lib.detect_OS()
+	#playlistURL = lib.extract_args("C:/Users/carre/Music")
+	playlistURL = lib.extract_args("/mnt/c/Users/carre/Music")
 	Youtube = msd.Youtube(playlistURL,template_URL)
 	infos = Youtube.getInfos()
 	names_file = Youtube.sortName(infos)
