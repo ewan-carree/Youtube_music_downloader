@@ -23,17 +23,27 @@ class Youtube():
 		Nous souhaitons récupérer l'id, le title et le creator dans des listes
 		"""
 		infos = {"full_URL" : [], "titre" : [], "auteur" : [], "notCorresponding": []}
-		extract = youtube_dl.YoutubeDL({}).extract_info(self.URL, download=False)
-		for x in range(0,len(extract["entries"])):
-			if "Music" in extract["entries"][x]["categories"]:
-				infos["full_URL"].append(self.template_URL + extract["entries"][x]["id"])
-				infos["auteur"].append(extract["entries"][x]["creator"])
-				infos["titre"].append(extract["entries"][x]["title"])
 
-			if "Music" not in extract["entries"][x]["categories"]:
-				print("Part of the playlist isn't corresponding to the good format")
-				infos["notCorresponding"].append(extract["entries"][x]["title"])
-				print(infos["notCorresponding"])
+		ydlOpts = {'ignoreerrors': 'true'}
+		youtube_dl.YoutubeDL(ydlOpts).cache.remove()
+		extract = youtube_dl.YoutubeDL(ydlOpts).extract_info(self.URL, download=False)
+		
+		for x in range(0,len(extract["entries"])):
+			if extract["entries"][x] != None:
+				if "Music" in extract["entries"][x]["categories"]:
+					infos["full_URL"].append(self.template_URL + extract["entries"][x]["id"])
+					infos["auteur"].append(extract["entries"][x]["creator"])
+					infos["titre"].append(extract["entries"][x]["title"])
+
+				if "Music" not in extract["entries"][x]["categories"]:
+					infos["notCorresponding"].append(extract["entries"][x]["title"])
+			else:
+				print("At least one content is blocked by Youtube")
+				
+		if len(infos["notCorresponding"])!=0:
+			print("Part of the playlist isn't corresponding to the good format")
+			print(infos["notCorresponding"])
+
 
 		return infos
 
@@ -42,8 +52,10 @@ class Youtube():
 	def download(self,infos,names_file):
 		i=0
 		for url in infos["full_URL"]:
-			#os.system('youtube-dl {} -x --audio-format "mp3"'.format(url))
-			os.system('youtube-dl {} -x --audio-format "mp3" -o "{}.%(ext)s"'.format(url, names_file[i]))
+			try:
+				os.system('youtube-dl {} -x --audio-format "mp3" -o "{}.%(ext)s"'.format(url, names_file[i]))
+			except Exception:
+				print("le fichier {} n'a pas pu être téléchargé".format(names_file[i]))
 			i+=1
 
 
@@ -98,8 +110,3 @@ class Youtube():
 			i+=1
 				
 		return names_file
-
-
-
-
-
