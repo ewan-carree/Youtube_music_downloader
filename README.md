@@ -6,7 +6,8 @@ Prérequis : installer youtube-dl
 
 Some errors may occure : ERROR: unable to download video data: HTTP Error 403: Forbidden
 Fix it by writing "youtube-dl --rm-cache-dir" in the console
-Problem now fixed
+
+Problem now fixed but I leave this comment to remember in case of need.
 
 Use : python pathTofile\main.py URL Folder
 folder argument is optionnal, if you put it, it will download content directly into this folder. Else it will download into music directory on youre computer
