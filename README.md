@@ -1,6 +1,8 @@
 # Youtube_music_downloader
 Download a whole playlist from youtube into mp3 files directly in your Music directory with or without a special folder. Usefull to download albums' artists
 
+NOT EXECUTABLE SINCE COUPLE DAYS, YOUTUBE-DL CHANGED !!!!!!!!
+
 ## Prerequisite
 download youtube-dl 
 
@@ -12,6 +14,10 @@ Some errors may occure : ERROR: unable to download video data: HTTP Error 403: F
 Fix it by writing "youtube-dl --rm-cache-dir" in the console
 
 Problem now fixed but I leave this comment to remember in case of need.
+
+ERROR: No video formats found; please report this issue on https://yt-dl.org/bug . Make sure you are using the latest version; see  https://yt-dl.org/update  on how to update. Be sure to call youtube-dl with the --verbose flag and include its complete output.
+
+PROBLEM !!!!!
 
 ## Use
 python3 pathTofile\main.py URL Folder
